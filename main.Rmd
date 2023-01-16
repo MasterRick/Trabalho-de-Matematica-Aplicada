@@ -1,0 +1,115 @@
+---
+title: "Tabela da Copa do Mundo"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    theme:
+      version: 4
+      bg: "#FFFFFF"
+      fg: "#4a9ca1" 
+      primary: "#FFFFFF"
+      navbar-bg: "#FFFFFF"
+      base_font: 
+        google: Prompt
+      heading_font:
+        google: Sen
+      code_font:
+        google: 
+          # arguments to sass::font_google() 
+          family: JetBrains Mono
+          local: false
+runtime: shiny
+---
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(shiny)
+library(ggplot2)
+library(dplyr)
+library(rvest)
+library(plotly)
+```
+
+<style>
+.noBorder {
+  border:none!important;
+}
+</style>
+
+Column {.sidebar .noBorder} 
+-----------------------------------------------------------------------
+```{r}
+selectInput(
+  "group",
+  label = "Selecione o Grupo",
+  choices = c("Grupo A", "Grupo B","Grupo C","Grupo D","Grupo E","Grupo F","Grupo G", "Grupo H")
+)
+```
+Row {data-width=500}
+-----------------------------------------------------------------------
+
+### Tabela {class="noBorder"}
+
+```{r}
+ fii_url <- "https://www.terra.com.br/esportes/futebol/copa-2022/tabela/"
+choices <- c("Grupo A", "Grupo B","Grupo C","Grupo D","Grupo E","Grupo F","Grupo G", "Grupo H")
+div_ru <- reactive({
+rating <- read_html(fii_url) %>% 
+  html_elements("table") %>%  .[match(c(input$group),choices)] %>% html_table() %>%  as.data.frame()%>% select(Times.2, P, J,V,E,D,GP,GC,SG,X.)  %>%  `colnames<-`(c("TIMES", "P","J","V","E","D","GP","GC","SG","%")) 
+  }) 
+
+
+renderTable({
+  div_ru()
+})
+```
+### Gráfico {class="noBorder"}
+
+```{r}
+fii_url <- "https://www.terra.com.br/esportes/futebol/copa-2022/tabela/"
+choices <- c("Grupo A", "Grupo B","Grupo C","Grupo D","Grupo E","Grupo F","Grupo G", "Grupo H")
+div_ru <- reactive({
+rating <- read_html(fii_url) %>% 
+  html_elements("table") %>%  .[match(c(input$group),choices)] %>% html_table() %>%  as.data.frame()%>% select(Times.2, P, J,V,E,D,GP,GC,SG,X.)  %>%  `colnames<-`(c("TIMES", "P","J","V","E","D","GP","GC","SG","%")) 
+  }) 
+
+renderPlotly({
+  ggplot(div_ru()) + 
+    aes(x=J, y=GP) +geom_line()
+})
+
+```
+Row {data-width=500}
+-----------------------------------------------------------------------
+
+### Gráfico {class="noBorder"}
+
+```{r}
+fii_url <- "https://www.terra.com.br/esportes/futebol/copa-2022/tabela/"
+choices <- c("Grupo A", "Grupo B","Grupo C","Grupo D","Grupo E","Grupo F","Grupo G", "Grupo H")
+div_ru <- reactive({
+rating <- read_html(fii_url) %>% 
+  html_elements("table") %>%  .[match(c(input$group),choices)] %>% html_table() %>%  as.data.frame()%>% select(Times.2, P, J,V,E,D,GP,GC,SG,X.)  %>%  `colnames<-`(c("TIMES", "P","J","V","E","D","GP","GC","SG","%")) 
+  }) 
+
+renderPlotly({
+  ggplot(div_ru()) + 
+    aes(x=J, y=GP) +geom_line()
+})
+```
+### Gráfico {class="noBorder"}
+
+```{r}
+fii_url <- "https://www.terra.com.br/esportes/futebol/copa-2022/tabela/"
+choices <- c("Grupo A", "Grupo B","Grupo C","Grupo D","Grupo E","Grupo F","Grupo G", "Grupo H")
+div_ru <- reactive({
+rating <- read_html(fii_url) %>% 
+  html_elements("table") %>%  .[match(c(input$group),choices)] %>% html_table() %>%  as.data.frame()%>% select(Times.2, P, J,V,E,D,GP,GC,SG,X.)  %>%  `colnames<-`(c("TIMES", "P","J","V","E","D","GP","GC","SG","%")) 
+  }) 
+
+renderPlotly({
+  ggplot(div_ru()) + 
+    aes(x=J, y=GP) +geom_line()
+})
+
+```
